@@ -4,13 +4,14 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
-import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
+import org.springframework.jdbc.core.JdbcTemplate;
+import javax.sql.DataSource;
 
 public class JobListener implements JobExecutionListener {
-	private SimpleJdbcTemplate simpleJdbcTemplate;
+	private final JdbcTemplate jdbcTemplate;
 	
-	public void setSimpleJdbcTemplate(SimpleJdbcTemplate simpleJdbcTemplate) {
-		this.simpleJdbcTemplate = simpleJdbcTemplate;
+	public JobListener(DataSource dataSource) {
+		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 
 	@Override
@@ -19,7 +20,7 @@ public class JobListener implements JobExecutionListener {
 
 	@Override
 	public void afterJob(JobExecution jobExecution) {
-		List<Map<String, Object>> products = simpleJdbcTemplate.queryForList("SELECT * FROM products");
+		List<Map<String, Object>> products = jdbcTemplate.queryForList("SELECT * FROM products");
 		for (Map<String, Object> product : products) {
 			System.out.println(product);
 		}
