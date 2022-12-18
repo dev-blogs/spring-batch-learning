@@ -37,6 +37,17 @@ import java.io.FileOutputStream;
 import java.util.Map;
 import java.util.zip.ZipInputStream;
 
+/**
+ * From doc:
+ * Once you have an @EnableBatchProcessing class in your configuration you will have an instance of StepScope and org.springframework.batch.core.scope.JobScope so your beans inside steps can have @Scope("step") and @Scope("job") respectively. You will also be able to @Autowired some useful stuff into your context:
+ * a JobRepository (bean name "jobRepository")
+ * a JobLauncher (bean name "jobLauncher")
+ * a JobRegistry (bean name "jobRegistry")
+ * a org.springframework.batch.core.explore.JobExplorer (bean name "jobExplorer")
+ * a PlatformTransactionManager (bean name "transactionManager")
+ * a JobBuilderFactory (bean name "jobBuilders") as a convenience to prevent you from having to inject the job repository into every job, as in the examples above
+ * a StepBuilderFactory (bean name "stepBuilders") as a convenience to prevent you from having to inject the job repository and transaction manager into every step
+ */
 @Configuration
 @EnableBatchProcessing(modular = true)
 public class BatchConfig {
