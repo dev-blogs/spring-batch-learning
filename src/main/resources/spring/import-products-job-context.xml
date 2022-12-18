@@ -6,10 +6,11 @@ http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 http://www.springframework.org/schema/batch
 http://www.springframework.org/schema/batch/spring-batch-2.1.xsd">
 
-	<job id="importProducts" xmlns="http://www.springframework.org/schema/batch">
+	<job id="importProducts" incrementer="incrementer" xmlns="http://www.springframework.org/schema/batch">
 		<listeners>
 			<listener ref="jobListener" />
 		</listeners>
+		<validator ref="customJobParameterValidator" />
 		<step id="decompress" next="readWriteProducts">
 			<tasklet ref="decompressTasklet"/>
 		</step>
@@ -23,6 +24,26 @@ http://www.springframework.org/schema/batch/spring-batch-2.1.xsd">
 			</tasklet>
 		</step>
 	</job>
+
+	<bean id="customJobParameterValidator" class="com.example.batch.validator.CustomJobParametersValidator" />
+
+	<bean id="defaultJobParameterValidator" class="org.springframework.batch.core.job.DefaultJobParametersValidator">
+		<property name="requiredKeys">
+			<set>
+				<value>inputResource</value>
+				<value>targetDirectory</value>
+				<value>targetFile</value>
+				<value>timestamp</value>
+			</set>
+		</property>
+		<property name="optionalKeys">
+			<set>
+				<value>testdata</value>
+			</set>
+		</property>
+	</bean>
+
+	<bean id="incrementer" class="com.example.batch.incrementer.CustomJobParametersIncrementer" />
 	
 	<bean id="jobListener" class="com.example.batch.listener.JobListener">
 		<property name="simpleJdbcTemplate" ref="simpleJdbcTemplate" />
