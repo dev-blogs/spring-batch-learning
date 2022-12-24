@@ -18,7 +18,8 @@ public class ProductJdbcItemWriter implements ItemWriter<Product> {
 	public ProductJdbcItemWriter(DataSource dataSource) {
 		this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 	}
-	
+
+	@Override
 	public void write(List<? extends Product> items) throws Exception {
 		for (Product item : items) {
 			SqlParameterSource sqlParameterSource = new MapSqlParameterSource(new HashMap<String, Object>() {

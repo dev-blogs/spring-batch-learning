@@ -5,6 +5,7 @@ import org.springframework.batch.item.file.transform.FieldSet;
 import com.example.model.Product;
 
 public class ProductFieldSetMapper implements FieldSetMapper<Product> {
+	@Override
 	public Product mapFieldSet(FieldSet fieldSet) {
 		Product product = new Product();
 		product.setId(fieldSet.readString("ID"));
