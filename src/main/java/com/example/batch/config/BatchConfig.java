@@ -13,7 +13,6 @@ import org.springframework.batch.core.configuration.annotation.EnableBatchProces
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
-import org.springframework.batch.core.step.skip.SkipPolicy;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
@@ -29,11 +28,9 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.dao.DeadlockLoserDataAccessException;
 import javax.sql.DataSource;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.util.Map;
 import java.util.zip.ZipInputStream;
 
@@ -76,11 +73,14 @@ public class BatchConfig {
     public Step masterStep() {
         return stepBuilderFactory.get(JOB_MASTER_STEP)
                 .chunk(10)
-                .reader(reader(null))
-                .writer(writer())
-                .faultTolerant()
-                .skipLimit(2)
-                .skip(FlatFileParseException.class)
+                    .reader(reader(null))
+                    .writer(writer())
+                    .faultTolerant()
+                        .skipLimit(2)
+                        .skip(FlatFileParseException.class)
+                        .noSkip(FileNotFoundException.class)
+                        .retryLimit(3)
+                        .retry(DeadlockLoserDataAccessException.class)
                 .build();
     }
 
