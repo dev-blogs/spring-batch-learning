@@ -79,7 +79,8 @@ public class BatchConfig {
                 .reader(reader(null))
                 .writer(writer())
                 .faultTolerant()
-                .skipPolicy(skipPolicy())
+                .skipLimit(2)
+                .skip(FlatFileParseException.class)
                 .build();
     }
 
@@ -109,16 +110,6 @@ public class BatchConfig {
     @Bean
     public ItemWriter writer() {
         return new ProductJdbcItemWriter(dataSource);
-    }
-
-    @Bean
-    public SkipPolicy skipPolicy() {
-        return (t, sc) -> {
-            if (t instanceof FlatFileParseException) {
-                return true;
-            }
-            return false;
-        };
     }
 
     @Bean
