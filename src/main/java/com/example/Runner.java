@@ -8,7 +8,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 
+import java.util.logging.Logger;
+
 public class Runner {
+    private static final Logger logger = Logger.getLogger("Runner");
     public static void main(String[] args) throws Exception {
         ApplicationContext context = new ClassPathXmlApplicationContext("spring/import-products-job-context.xml", "spring/infrustructure-context.xml");
 
@@ -27,6 +30,6 @@ public class Runner {
         jobLauncher.run(job, jobParameters);
 
         int count = simpleJdbcTemplate.queryForInt("SELECT count(*) FROM products");
-        System.out.println("count: " + count);
+        logger.info("count: " + count);
     }
 }
