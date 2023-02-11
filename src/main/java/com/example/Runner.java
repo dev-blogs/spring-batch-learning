@@ -23,7 +23,7 @@ public class Runner {
 
         JobParameters jobParameters = new JobParametersBuilder()
                 .addString("inputResource", "./input/products.zip")
-                .addString("targetDirectory", "./target/importproductsbatch/")
+                .addString("targetDirectory", ".")
                 .addString("targetFile", "products.txt")
                 .addString("testdata", "test")
                 .addLong("timestamp", System.currentTimeMillis())
