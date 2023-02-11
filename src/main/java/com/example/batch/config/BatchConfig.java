@@ -121,9 +121,9 @@ public class BatchConfig {
         return (c, cc) -> {
             ZipInputStream zis = new ZipInputStream(new BufferedInputStream(inputResource.getInputStream()));
             File targetDirectoryAsFile = new File(targetDirectory);
-            if (!targetDirectoryAsFile.exists()) {
+            /*if (!targetDirectoryAsFile.exists()) {
                 FileUtils.forceMkdir(targetDirectoryAsFile);
-            }
+            }*/
             File target = new File(targetFile);
             BufferedOutputStream dest = null;
             while (zis.getNextEntry() != null) {
