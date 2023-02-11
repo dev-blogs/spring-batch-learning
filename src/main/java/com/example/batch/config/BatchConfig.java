@@ -124,7 +124,7 @@ public class BatchConfig {
             if (!targetDirectoryAsFile.exists()) {
                 FileUtils.forceMkdir(targetDirectoryAsFile);
             }
-            File target = new File(targetDirectory, targetFile);
+            File target = new File(targetFile);
             BufferedOutputStream dest = null;
             while (zis.getNextEntry() != null) {
                 if (!target.exists()) {
