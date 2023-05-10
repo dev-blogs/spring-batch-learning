@@ -1,0 +1,3 @@
+To run job on Windows run one of two commands:
+java -classpath ".;target\spring-batch-example-0.0.1-SNAPSHOT.jar;src\main\resources;.\target\dependency\*" org.springframework.batch.core.launch.support.CommandLineJobRunner spring\import-products-job-context.xml importProducts inputResource=classpath:/input/products.zip targetDirectory=./target/importproductsbatch/ targetFile=products.txt timestamp=0
+java -classpath "target\spring-batch-example-0.0.1-SNAPSHOT.jar;src\main\resources;.\target\dependency\*" org.springframework.batch.core.launch.support.CommandLineJobRunner file:.\src\main\resources\spring\import-products-job-context.xml importProducts inputResource=classpath:/input/products.zip targetDirectory=./target/importproductsbatch/ targetFile=products.txt timestamp=0
