@@ -83,4 +83,6 @@
 			<bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider" />
 		</property>
 	</bean>
+
+	<bean class="com.example.batch.SkippedAwareExitCodeMapper" />
 </beans>
