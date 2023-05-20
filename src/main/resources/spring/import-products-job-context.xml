@@ -9,10 +9,12 @@
 			http://www.springframework.org/schema/batch
 			http://www.springframework.org/schema/batch/spring-batch-2.1.xsd">
 
-	<jdbc:embedded-database id="dataSource" type="H2">
-		<jdbc:script location="db/create-tables.sql" />
-		<jdbc:script location="org/springframework/batch/core/schema-h2.sql" />
-	</jdbc:embedded-database>
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.SingleConnectionDataSource">
+		<property name="url" value="jdbc:mysql://IP_ADDRESS:3306/DATABASE_NAME" />
+		<property name="username" value="user" />
+		<property name="password" value="password" />
+		<property name="suppressClose" value="true" />
+	</bean>
 
 	<bean id="simpleJdbcTemplate" class="org.springframework.jdbc.core.simple.SimpleJdbcTemplate">
 		<constructor-arg ref="dataSource" />
