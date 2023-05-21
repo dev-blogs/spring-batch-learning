@@ -46,7 +46,7 @@ sudo docker rmi $(sudo docker images -q)
 
 #exeucte DDLs taken from sprint-batch
 db/create-tables.sql
-org/springframework/batch/core/schema-h2.sql
+org/springframework/batch/core/schema-mysql.sql
 
 #-------------------------On java vm-------------------------
 #Install all tools
