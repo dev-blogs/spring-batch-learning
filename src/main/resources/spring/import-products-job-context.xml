@@ -38,7 +38,7 @@
 	</bean>
 
 	<bean id="springSchedulingLauncher" class="com.example.launcher.SpringSchedulingLauncher">
-		<property name="job" ref="job" />
+		<property name="job" ref="importProducts" />
 		<property name="jobLauncher" ref="jobLauncher" />
 	</bean>
 
