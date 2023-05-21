@@ -1,10 +1,54 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:batch="http://www.springframework.org/schema/batch"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
-http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-http://www.springframework.org/schema/batch
-http://www.springframework.org/schema/batch/spring-batch-2.1.xsd">
+				http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+				http://www.springframework.org/schema/batch
+				http://www.springframework.org/schema/batch/spring-batch-2.1.xsd
+				http://www.springframework.org/schema/task
+				http://www.springframework.org/schema/task/spring-task-3.0.xsd
+				http://www.springframework.org/schema/jdbc
+				http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd">
+
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.SingleConnectionDataSource">
+		<property name="url" value="jdbc:mysql://IP_ADDRESS:3306/DATABASE_NAME" />
+		<property name="username" value="user" />
+		<property name="password" value="password" />
+		<property name="suppressClose" value="true" />
+	</bean>
+
+	<bean id="simpleJdbcTemplate" class="org.springframework.jdbc.core.simple.SimpleJdbcTemplate">
+		<constructor-arg ref="dataSource" />
+	</bean>
+
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<batch:job-repository id="jobRepository" transaction-manager="transactionManager" />
+
+	<bean id="jobLauncher" class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
+		<property name="jobRepository" ref="jobRepository" />
+	</bean>
+
+	<bean class="org.springframework.jdbc.core.JdbcTemplate">
+		<constructor-arg ref="dataSource" />
+	</bean>
+
+	<bean id="springSchedulingLauncher" class="com.example.launcher.SpringSchedulingLauncher">
+		<property name="job" ref="job" />
+		<property name="jobLauncher" ref="jobLauncher" />
+	</bean>
+
+	<task:scheduler id="scheduler" pool-size="10" />
+
+	<task:scheduled-tasks scheduler="scheduler">
+		<task:scheduled ref="springSchedulingLauncher"
+						method="launch"
+						fixed-rate="1000" />
+	</task:scheduled-tasks>
 
 	<job id="importProducts" xmlns="http://www.springframework.org/schema/batch">
 		<listeners>
