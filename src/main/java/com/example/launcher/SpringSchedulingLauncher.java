@@ -9,6 +9,14 @@ public class SpringSchedulingLauncher {
     private Job job;
     private JobLauncher jobLauncher;
 
+    public void setJob(Job job) {
+        this.job = job;
+    }
+
+    public void setJobLauncher(JobLauncher jobLauncher) {
+        this.jobLauncher = jobLauncher;
+    }
+
     public void launch() throws Exception {
         JobParameters jobParams = createJobParameters();
         jobLauncher.run(job, jobParams);
