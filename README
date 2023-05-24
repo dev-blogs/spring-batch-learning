@@ -34,10 +34,10 @@ sudo apt-get update
 sudo apt-get install openjdk-11-jdk
 sudo apt-get install maven
 
-#Clone git repository and checkout to '4-3-2-spring-scheduler-class-config' branch
+#Clone git repository and checkout to '4-3-2-command-line-job-runner-class-config' branch
 git clone https://github.com/dev-blogs/spring-batch-learning
 cd spring-batch-learning
-git checkout 4-3-2-spring-scheduler-class-config
+git checkout 4-3-2-command-line-job-runner-class-config
 
 #Change IP_ADDRESS, DATABASE_NAME, USERNAME and PASSWORD of mysql server db in src/main/resources/application.properties
 
