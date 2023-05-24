@@ -15,7 +15,7 @@ public class DatabaseConfig {
 
     @Value("${url}")
     private String url;
-    @Value("${user}")
+    @Value("${username}")
     private String username;
     @Value("${password}")
     private String password;
