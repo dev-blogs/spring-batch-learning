@@ -1,5 +1,5 @@
 #Compile package:
-mvn package
+mvn clean package -DskipTests
 
 #Copy dependencies to dependency folder:
 mvn dependency:copy-dependencies
