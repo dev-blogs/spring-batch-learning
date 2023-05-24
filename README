@@ -1,0 +1,65 @@
+#How to setup e2e decision, which triggers spring-batch by cron scheduler in linux
+
+#Prepare 2 vms, for mysql and for java
+
+#--------------------on mysql vm------------------
+#Setup docker tool
+#https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04
+sudo apt install apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+apt-cache policy docker-ce
+sudo apt install docker-ce
+sudo systemctl status docker
+
+#Setup and run mysql service
+#https://learn.microsoft.com/ru-ru/visualstudio/docker/tutorials/tutorial-multi-container-app-mysql
+sudo docker network create todo-app
+sudo docker run -d --network todo-app -p 3306:3306 --network-alias mysql -v todo-mysql-data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=12345 -e MYSQL_DATABASE=testdb mysql:5.7
+
+#In case of some troubles all containers and images can be removed
+sudo docker stop $(sudo docker ps -aq)
+sudo docker rm $(sudo docker ps -aq)
+sudo docker rmi $(sudo docker images -q)
+
+#setup mysql client somewhere
+
+#exeucte DDLs taken from sprint-batch
+db/create-tables.sql
+org/springframework/batch/core/schema-mysql.sql
+
+#Compile package:
+mvn clean package -DskipTests
+
+#--------------on java vm-------------
+#Install all tools
+sudo apt-get update
+sudo apt-get install openjdk-11-jdk
+sudo apt-get install maven
+
+#Clone git repository and checkout to '4-3-2-spring-scheduler-class-config' branch
+git clone https://github.com/dev-blogs/spring-batch-learning
+cd spring-batch-learning
+git checkout 4-3-2-spring-scheduler-class-config
+
+#Change IP_ADDRESS, DATABASE_NAME, USERNAME and PASSWORD of mysql server db in src/main/resources/application.properties
+
+#Compile package:
+mvn clean package
+
+#Copy dependencies to dependency folder:
+mvn dependency:copy-dependencies
+
+#To run job on Windows, use one of two commands:
+java -classpath ".;target\spring-batch-example-0.0.1-SNAPSHOT.jar;src\main\resources;.\target\dependency\*" org.springframework.batch.core.launch.support.CommandLineJobRunner com.example.batch.config.BatchConfig importProducts inputResource=input\products.zip targetDirectory=./target/importproductsbatch/ targetFile=products.txt timestamp=0
+
+#To run job on Linux:
+java -classpath ".:target/spring-batch-example-0.0.1-SNAPSHOT.jar:src/main/resources:./target/dependency/*" org.springframework.batch.core.launch.support.CommandLineJobRunner com.example.batch.config.BatchConfig importProducts inputResource=classpath:/input/products.zip targetDirectory=./target/importproductsbatch/ targetFile=products.txt
+
+#Check mysql db
+select * from BATCH_JOB_EXECUTION
+
+#https://crontab.guru/every-5-minutes
+#Setup cron expression every 5 minutes
+sudo vim /etc/crontab
+*/5 * * * * dev-blogs java -classpath ".:target/spring-batch-example-0.0.1-SNAPSHOT.jar:src/main/resources:./target/dependency/*" org.springframework.batch.core.launch.support.CommandLineJobRunner com.example.batch.config.BatchConfig importProducts inputResource=classpath:/input/products.zip targetDirectory=./target/importproductsbatch/ targetFile=products.txt

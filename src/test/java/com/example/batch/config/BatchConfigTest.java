@@ -1,8 +1,8 @@
 package com.example.batch.config;
 
-import com.example.batch.writer.mapper.ProductFieldSetMapper;
-import com.example.batch.writer.ProductJdbcItemWriter;
 import com.example.batch.listener.JobListener;
+import com.example.batch.writer.ProductJdbcItemWriter;
+import com.example.batch.writer.mapper.ProductFieldSetMapper;
 import com.example.model.Product;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -30,15 +30,16 @@ import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.dao.DeadlockLoserDataAccessException;
+
 import javax.sql.DataSource;
 import java.io.*;
 import java.util.Map;
 import java.util.zip.ZipInputStream;
 
 @Configuration
-@Import(DatabaseConfig.class)
+@Import(DatabaseConfigTest.class)
 @EnableBatchProcessing(modular = true)
-public class BatchConfig {
+public class BatchConfigTest {
     private static final String JOB_NAME = "importProducts";
     private static final String DECOMPRESS_NAME = "decompress";
     private static final String JOB_MASTER_STEP = "masterStep";
@@ -49,7 +50,6 @@ public class BatchConfig {
     private StepBuilderFactory stepBuilderFactory;
     @Autowired
     private DataSource dataSource;
-
     @Bean("importProducts")
     public Job job() {
         return jobBuilderFactory.get(JOB_NAME)
@@ -58,12 +58,10 @@ public class BatchConfig {
                 .next(masterStep())
                 .build();
     }
-
     @Bean
     public JobExecutionListener jobListener() {
         return new JobListener(dataSource);
     }
-
     @Bean
     public Step decompress() {
         return stepBuilderFactory.get(DECOMPRESS_NAME)
@@ -75,14 +73,14 @@ public class BatchConfig {
     public Step masterStep() {
         return stepBuilderFactory.get(JOB_MASTER_STEP)
                 .chunk(10)
-                    .reader(reader(null))
-                    .writer(writer())
-                    .faultTolerant()
-                        .skipLimit(2)
-                        .skip(FlatFileParseException.class)
-                        .noSkip(FileNotFoundException.class)
-                        .retryLimit(3)
-                        .retry(DeadlockLoserDataAccessException.class)
+                .reader(reader(null))
+                .writer(writer())
+                .faultTolerant()
+                .skipLimit(2)
+                .skip(FlatFileParseException.class)
+                .noSkip(FileNotFoundException.class)
+                .retryLimit(3)
+                .retry(DeadlockLoserDataAccessException.class)
                 .build();
     }
 
