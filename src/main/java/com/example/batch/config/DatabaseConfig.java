@@ -15,15 +15,15 @@ public class DatabaseConfig {
 
     @Value("${url}")
     private String url;
-    @Value("${user}")
-    private String user;
+    @Value("${login}")
+    private String login;
     @Value("${password}")
     private String password;
     @Bean
     public DataSource dataSource() {
         SingleConnectionDataSource dataSource = new SingleConnectionDataSource();
         dataSource.setUrl(url);
-        dataSource.setUsername(user);
+        dataSource.setUsername(login);
         dataSource.setPassword(password);
         dataSource.setSuppressClose(true);
         return dataSource;
