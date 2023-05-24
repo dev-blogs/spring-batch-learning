@@ -28,9 +28,6 @@ sudo docker rmi $(sudo docker images -q)
 db/create-tables.sql
 org/springframework/batch/core/schema-mysql.sql
 
-#Compile package:
-mvn clean package -DskipTests
-
 #--------------on java vm-------------
 #Install all tools
 sudo apt-get update
