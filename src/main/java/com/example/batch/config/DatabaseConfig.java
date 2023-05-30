@@ -22,6 +22,12 @@ public class DatabaseConfig {
     private String login;
     @Value("${password}")
     private String password;
+
+    /**
+     * @url: https://www.baeldung.com/java-connect-mysql
+     * @return
+     * @throws SQLException
+     */
     @Bean
     public DataSource dataSource() throws SQLException {
         MysqlDataSource dataSource = new MysqlDataSource();
