@@ -46,9 +46,17 @@ public class ProductStepTest {
 
 	@Test
 	public void testValidator() throws Exception {
-		String parameters = "inputResource=classpath:/input/products.zip,targetDirectory=./target/importproductsbatch/,targetFile=products.txt,timestamp=1";
-		//String parameters = "targetDirectory=./target/importproductsbatch/,targetFile=products.txt,timestamp=1";
-		jobOperator.start(job.getName(), parameters);
+		String jobParameters = new JobParametersBuilder()
+				.addString("inputResource", "classpath:/input/products.zip")
+				.addString("targetDirectory", "./target/importproductsbatch/")
+				.addString("targetFile", "products.txt")
+				.addLong("timestamp", System.currentTimeMillis())
+				.toJobParameters()
+				.toString()
+				.replace("{", "")
+				.replace("}", "");
+
+		jobOperator.start(job.getName(), jobParameters);
 
 		Long jobId = jobOperator.startNextInstance(job.getName());
 		System.out.println(String.format("jobId is %s", jobId));
