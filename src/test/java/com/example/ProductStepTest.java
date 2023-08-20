@@ -50,8 +50,8 @@ public class ProductStepTest {
 		//String parameters = "targetDirectory=./target/importproductsbatch/,targetFile=products.txt,timestamp=1";
 		jobOperator.start(job.getName(), parameters);
 
-		Long value = jobOperator.startNextInstance(job.getName());
-		System.out.println(String.format("Value is %s", value));
+		Long jobId = jobOperator.startNextInstance(job.getName());
+		System.out.println(String.format("JobId is %s", jobId));
 	}
 	
 	@Test
