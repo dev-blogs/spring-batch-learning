@@ -51,7 +51,7 @@ public class ProductStepTest {
 		jobOperator.start(job.getName(), parameters);
 
 		Long jobId = jobOperator.startNextInstance(job.getName());
-		System.out.println(String.format("JobId is %s", jobId));
+		System.out.println(String.format("jobId is %s", jobId));
 	}
 	
 	@Test
