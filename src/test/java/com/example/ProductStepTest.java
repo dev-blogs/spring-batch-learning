@@ -11,6 +11,7 @@ import org.springframework.batch.core.launch.JobOperator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.ExpectedException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -38,18 +39,37 @@ public class ProductStepTest {
 				.addString("testdata", "test")
 				.addLong("timestamp", System.currentTimeMillis())
 				.toJobParameters();
+
 		jobLauncher.run(job, jobParameters);
 
-		Long value = jobOperator.startNextInstance(job.getName());
-		System.out.println(String.format("Value is %s", value));
+		Long jobId = jobOperator.startNextInstance(job.getName());
+		System.out.println(String.format("jobId is %s", jobId));
 	}
 
 	@Test
-	public void testValidator() throws Exception {
+	public void testValidatorPositiveCase() throws Exception {
 		String jobParameters = new JobParametersBuilder()
 				.addString("inputResource", "classpath:/input/products.zip")
 				.addString("targetDirectory", "./target/importproductsbatch/")
 				.addString("targetFile", "products.txt")
+				.addLong("timestamp", System.currentTimeMillis())
+				.toJobParameters()
+				.toString()
+				.replace("{", "")
+				.replace("}", "");
+
+		jobOperator.start(job.getName(), jobParameters);
+
+		Long jobId = jobOperator.startNextInstance(job.getName());
+		System.out.println(String.format("jobId is %s", jobId));
+	}
+
+	@Test(expected = org.springframework.batch.core.JobParametersInvalidException.class)
+	public void testValidatorNegativeCase() throws Exception {
+		String jobParameters = new JobParametersBuilder()
+				.addString("inputResource", "classpath:/input/products.zip")
+				.addString("targetDirectory", "./target/importproductsbatch/")
+				//.addString("targetFile", "products.txt")
 				.addLong("timestamp", System.currentTimeMillis())
 				.toJobParameters()
 				.toString()
