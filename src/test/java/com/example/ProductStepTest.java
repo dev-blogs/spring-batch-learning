@@ -3,7 +3,7 @@ package com.example;
 import static org.junit.Assert.assertEquals;
 
 import com.example.batch.config.BatchConfig;
-import com.example.batch.config.DatabaseConfig;
+import com.example.batch.config.InfrastructureConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.batch.core.Job;
@@ -17,7 +17,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { BatchConfig.class, DatabaseConfig.class })
+@ContextConfiguration(classes = { BatchConfig.class, InfrastructureConfig.class })
 public class ProductStepTest {
 	@Autowired
 	private Job job;
