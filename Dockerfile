@@ -1,8 +1,11 @@
 FROM openjdk:11
 
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+RUN mkdir -p /usr/app
+RUN mkdir -p /usr/app/libs
 
-COPY target/spring-batch-example-0.0.1-SNAPSHOT.jar /usr/src/app
+WORKDIR /usr/app
 
-CMD ["java", "-jar", "spring-batch-example-0.0.1-SNAPSHOT.jar"]
+COPY target/spring-batch-example-0.0.1-SNAPSHOT.jar /usr/app
+COPY target/spring-batch-example-0.0.1-SNAPSHOT.lib/* /usr/app/libs
+
+CMD ["java", "-cp", "spring-batch-example-0.0.1-SNAPSHOT.jar:/usr/app/libs/*", "com.example.App"]
