@@ -24,7 +24,7 @@ public class App {
 
         JobParameters jobParameters = new JobParametersBuilder()
                 .addString("inputResource", "classpath:/input/products.zip")
-                .addString("targetDirectory", "./target/importproductsbatch/")
+                .addString("targetDirectory", "/tmp/target/importproductsbatch/")
                 .addString("targetFile", "products.txt")
                 .addString("testdata", "test")
                 .addLong("timestamp", System.currentTimeMillis())
