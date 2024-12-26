@@ -33,7 +33,7 @@ pipeline {
 		stage('Build') {
 			steps {
 				container('java-container') {
-					dir ('test') {
+					dir ('spring-batch-learning') {
 						sh "mvn -Dmaven.repo.local=/usr/.m2/repository clean install"
 						build_image()
 					}
@@ -44,7 +44,7 @@ pipeline {
 		stage('Deploy') {
 			steps {
 				container('java-container') {
-					dir ('test') {
+					dir ('spring-batch-learning') {
 						deploy_image()
 					}
 				}
@@ -54,7 +54,7 @@ pipeline {
 		stage('Check') {
 		    steps {
                 container('java-container') {
-                    dir ('test/target') {
+                    dir ('spring-batch-learning/target') {
                         sh "ls -la"
                     }
                 }
