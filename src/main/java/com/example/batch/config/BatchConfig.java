@@ -9,12 +9,9 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
-import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.core.configuration.annotation.*;
 import org.springframework.batch.core.step.tasklet.Tasklet;
-import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.*;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.FlatFileParseException;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
@@ -35,7 +32,7 @@ import java.util.Map;
 import java.util.zip.ZipInputStream;
 
 @Configuration
-@EnableBatchProcessing(modular = true)
+@EnableBatchProcessing
 public class BatchConfig {
     private static final String JOB_NAME = "importProducts";
     private static final String DECOMPRESS_NAME = "decompress";
@@ -85,8 +82,11 @@ public class BatchConfig {
     }
 
     @Bean
-    @StepScope
+    @JobScope
     public FlatFileItemReader<Product> reader(@Value("#{jobParameters}") Map<String, Object> jobParameters) {
+        if (jobParameters.size() == 0) {
+            return getStubFlatFileItemReaderItemReader();
+        }
         String targetDirectory = (String) jobParameters.get("targetDirectory");
         String targetFile = (String) jobParameters.get("targetFile");
         ResourceLoader resourceLoader = new DefaultResourceLoader();
@@ -107,14 +107,35 @@ public class BatchConfig {
         return reader;
     }
 
+    private FlatFileItemReader<Product> getStubFlatFileItemReaderItemReader() {
+        DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer();
+        tokenizer.setNames("ID", "NAME", "DESCRIPTION", "PRICE");
+
+        DefaultLineMapper<Product> lineMapper = new DefaultLineMapper<Product>();
+        lineMapper.setLineTokenizer(tokenizer);
+        lineMapper.setFieldSetMapper(new ProductFieldSetMapper());
+
+        Resource resource = new ClassPathResource("input/products.txt");
+
+        FlatFileItemReader<Product> reader = new FlatFileItemReader<Product>();
+        reader.setLinesToSkip(1);
+        reader.setResource(resource);
+        reader.setLineMapper(lineMapper);
+
+        return reader;
+    }
+
     @Bean
     public ItemWriter writer() {
         return new ProductJdbcItemWriter(dataSource);
     }
 
     @Bean
-    @StepScope
+    @JobScope
     public Tasklet decompressTasklet(@Value("#{jobParameters}") Map<String, Object> jobParameters) {
+        if (jobParameters.size() == 0) {
+            return (c, cc) -> RepeatStatus.FINISHED;
+        }
         Resource inputResource = new ClassPathResource((String) jobParameters.get("inputResource"));
         String targetDirectory = (String) jobParameters.get("targetDirectory");
         String targetFile = (String) jobParameters.get("targetFile");

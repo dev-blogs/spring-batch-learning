@@ -32,23 +32,23 @@ public class InfrastructureConfig {
     }
 
     @Bean
-    public DataSourceTransactionManager transactionManager() {
+    public DataSourceTransactionManager customTransactionManager() {
         return new DataSourceTransactionManager(dataSource());
     }
 
     @Bean
-    public JobRepository jobRepository() throws Exception {
+    public JobRepository customJobRepository() throws Exception {
         JobRepositoryFactoryBean factory = new JobRepositoryFactoryBean();
         factory.setDataSource(dataSource());
         factory.setDatabaseType("H2");
-        factory.setTransactionManager(transactionManager());
+        factory.setTransactionManager(customTransactionManager());
         return factory.getObject();
     }
 
     @Bean
-    public JobLauncher jobLauncher() throws Exception {
+    public JobLauncher customJobLauncher() throws Exception {
         SimpleJobLauncher jobLauncher = new SimpleJobLauncher();
-        jobLauncher.setJobRepository(jobRepository());
+        jobLauncher.setJobRepository(customJobRepository());
         return jobLauncher;
     }
 }
