@@ -25,7 +25,7 @@ pipeline {
 				container('java-container') {
 					sh 'echo "Hello from custom container!"'
 					sh 'printenv CUSTOM_ENV_VAR'
-					sh 'git clone https://github.com/dev-blogs/test.git'
+					sh 'git clone https://github.com/dev-blogs/spring-batch-learning.git'
 				}
 			}
 		}
@@ -34,6 +34,7 @@ pipeline {
 			steps {
 				container('java-container') {
 					dir ('spring-batch-learning') {
+					    sh 'git checkout class-config-spring-boot-web'
 						sh "mvn -Dmaven.repo.local=/usr/.m2/repository clean install"
 						build_image()
 					}
