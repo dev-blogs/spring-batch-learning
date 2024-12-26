@@ -83,7 +83,7 @@ def deploy_image() {
 			echo "Service ${SERVICE_NAME} exists. Replacing it with the new service..."
 			/usr/bin/oc delete service ${SERVICE_NAME} -n ${NAMESPACE} --config=${CONFIG}
 		else
-			echo "Service ${SERVICE_NAME} does not exist. Creating a new service..."
+			echo "Service ${SERVICE_NAME} does not exist. New service will be created."
 		fi
 
 		# Check if the deployment exists
@@ -91,7 +91,7 @@ def deploy_image() {
             echo "Deployment ${SERVICE_NAME} exists. Replacing it with the new deployment..."
             /usr/bin/oc delete dc ${SERVICE_NAME} -n ${NAMESPACE} --config=${CONFIG}
         else
-            echo "Deployment ${SERVICE_NAME} does not exist. Creating a new deployment..."
+            echo "Deployment ${SERVICE_NAME} does not exist. New deployment will be created."
         fi
 
         # Check if the route exists
@@ -99,15 +99,15 @@ def deploy_image() {
             echo "Route ${SERVICE_NAME} exists. Replacing it with the new route..."
             /usr/bin/oc delete route ${SERVICE_NAME} -n ${NAMESPACE} --config=${CONFIG}
         else
-            echo "Route ${SERVICE_NAME} does not exist. Creating a new route..."
+            echo "Route ${SERVICE_NAME} does not exist. New route will be created."
         fi
 
         # Check if the imagestream exists
         if /usr/bin/oc get imagestream --config=${CONFIG} ${SERVICE_NAME} -n ${NAMESPACE} > /dev/null 2>&1; then
             echo "Imagestream ${SERVICE_NAME} exists. Replacing it with the new imagestream..."
-            /usr/bin/oc delete imagestream test-app -n ${NAMESPACE} --config=${CONFIG}
+            /usr/bin/oc delete imagestream ${SERVICE_NAME} -n ${NAMESPACE} --config=${CONFIG}
         else
-            echo "Imagestream ${SERVICE_NAME} does not exist. Creating a new imagestream..."
+            echo "Imagestream ${SERVICE_NAME} does not exist. New imagestream will be created."
         fi
 
 		# Deploy the application
