@@ -80,15 +80,35 @@ def deploy_image() {
 
 		# Check if the service exists
 		if /usr/bin/oc get service --config=${CONFIG} ${SERVICE_NAME} -n ${NAMESPACE} > /dev/null 2>&1; then
-			echo "Service ${SERVICE_NAME} exists. Replacing it with the new deployment..."
-
+			echo "Service ${SERVICE_NAME} exists. Replacing it with the new service..."
 			/usr/bin/oc delete service ${SERVICE_NAME} -n ${NAMESPACE} --config=${CONFIG}
-			/usr/bin/oc delete dc ${SERVICE_NAME} -n ${NAMESPACE} --config=${CONFIG}
-			/usr/bin/oc delete route ${SERVICE_NAME} -n ${NAMESPACE} --config=${CONFIG}
-			/usr/bin/oc delete imagestream test-app -n ${NAMESPACE} --config=${CONFIG}
 		else
-			echo "Service ${SERVICE_NAME} does not exist. Creating a new deployment..."
+			echo "Service ${SERVICE_NAME} does not exist. Creating a new service..."
 		fi
+
+		# Check if the deployment exists
+        if /usr/bin/oc get dc --config=${CONFIG} ${SERVICE_NAME} -n ${NAMESPACE} > /dev/null 2>&1; then
+            echo "Deployment ${SERVICE_NAME} exists. Replacing it with the new deployment..."
+            /usr/bin/oc delete dc ${SERVICE_NAME} -n ${NAMESPACE} --config=${CONFIG}
+        else
+            echo "Deployment ${SERVICE_NAME} does not exist. Creating a new deployment..."
+        fi
+
+        # Check if the route exists
+        if /usr/bin/oc get route --config=${CONFIG} ${SERVICE_NAME} -n ${NAMESPACE} > /dev/null 2>&1; then
+            echo "Route ${SERVICE_NAME} exists. Replacing it with the new route..."
+            /usr/bin/oc delete route ${SERVICE_NAME} -n ${NAMESPACE} --config=${CONFIG}
+        else
+            echo "Route ${SERVICE_NAME} does not exist. Creating a new route..."
+        fi
+
+        # Check if the imagestream exists
+        if /usr/bin/oc get imagestream --config=${CONFIG} ${SERVICE_NAME} -n ${NAMESPACE} > /dev/null 2>&1; then
+            echo "Imagestream ${SERVICE_NAME} exists. Replacing it with the new imagestream..."
+            /usr/bin/oc delete imagestream test-app -n ${NAMESPACE} --config=${CONFIG}
+        else
+            echo "Imagestream ${SERVICE_NAME} does not exist. Creating a new imagestream..."
+        fi
 
 		# Deploy the application
 		/usr/bin/oc new-app --docker-image=${DOCKER_IMAGE} --name=${SERVICE_NAME} -n ${NAMESPACE} --config=${CONFIG}
