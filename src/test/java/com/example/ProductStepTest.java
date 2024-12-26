@@ -39,6 +39,6 @@ public class ProductStepTest {
 		
 		jobLauncher.run(job, jobParameters);
 		
-		assertEquals(3, jdbcTemplate.queryForObject("SELECT count(*) FROM products", Integer.class).intValue());
+		assertEquals(5, jdbcTemplate.queryForObject("SELECT count(*) FROM products", Integer.class).intValue());
 	}
 }
