@@ -82,7 +82,7 @@ public class BatchConfig {
     }
 
     @Bean
-    @JobScope
+    @StepScope
     public FlatFileItemReader<Product> reader(@Value("#{jobParameters}") Map<String, Object> jobParameters) {
         if (jobParameters.size() == 0) {
             return getStubFlatFileItemReaderItemReader();
@@ -131,7 +131,7 @@ public class BatchConfig {
     }
 
     @Bean
-    @JobScope
+    @StepScope
     public Tasklet decompressTasklet(@Value("#{jobParameters}") Map<String, Object> jobParameters) {
         if (jobParameters.size() == 0) {
             return (c, cc) -> RepeatStatus.FINISHED;

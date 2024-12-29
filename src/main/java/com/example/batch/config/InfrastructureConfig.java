@@ -1,13 +1,8 @@
 package com.example.batch.config;
 
-import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.batch.core.launch.support.SimpleJobLauncher;
-import org.springframework.batch.core.repository.JobRepository;
-import org.springframework.batch.core.repository.support.JobRepositoryFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -29,26 +24,5 @@ public class InfrastructureConfig {
     @Bean
     public JdbcTemplate jdbcTemplate() {
         return new JdbcTemplate(dataSource());
-    }
-
-    @Bean
-    public DataSourceTransactionManager customTransactionManager() {
-        return new DataSourceTransactionManager(dataSource());
-    }
-
-    @Bean
-    public JobRepository customJobRepository() throws Exception {
-        JobRepositoryFactoryBean factory = new JobRepositoryFactoryBean();
-        factory.setDataSource(dataSource());
-        factory.setDatabaseType("H2");
-        factory.setTransactionManager(customTransactionManager());
-        return factory.getObject();
-    }
-
-    @Bean
-    public JobLauncher customJobLauncher() throws Exception {
-        SimpleJobLauncher jobLauncher = new SimpleJobLauncher();
-        jobLauncher.setJobRepository(customJobRepository());
-        return jobLauncher;
     }
 }
