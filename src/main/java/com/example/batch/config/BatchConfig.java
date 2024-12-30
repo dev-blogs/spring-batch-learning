@@ -104,24 +104,6 @@ public class BatchConfig {
         return reader;
     }
 
-    private FlatFileItemReader<Product> getStubFlatFileItemReaderItemReader() {
-        DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer();
-        tokenizer.setNames("ID", "NAME", "DESCRIPTION", "PRICE");
-
-        DefaultLineMapper<Product> lineMapper = new DefaultLineMapper<Product>();
-        lineMapper.setLineTokenizer(tokenizer);
-        lineMapper.setFieldSetMapper(new ProductFieldSetMapper());
-
-        Resource resource = new ClassPathResource("input/products.txt");
-
-        FlatFileItemReader<Product> reader = new FlatFileItemReader<Product>();
-        reader.setLinesToSkip(1);
-        reader.setResource(resource);
-        reader.setLineMapper(lineMapper);
-
-        return reader;
-    }
-
     @Bean
     public ItemWriter writer() {
         return new ProductJdbcItemWriter(dataSource);
