@@ -84,9 +84,6 @@ public class BatchConfig {
     @Bean
     @StepScope
     public FlatFileItemReader<Product> reader(@Value("#{jobParameters}") Map<String, Object> jobParameters) {
-        if (jobParameters.size() == 0) {
-            return getStubFlatFileItemReaderItemReader();
-        }
         String targetDirectory = (String) jobParameters.get("targetDirectory");
         String targetFile = (String) jobParameters.get("targetFile");
         ResourceLoader resourceLoader = new DefaultResourceLoader();
@@ -133,9 +130,6 @@ public class BatchConfig {
     @Bean
     @StepScope
     public Tasklet decompressTasklet(@Value("#{jobParameters}") Map<String, Object> jobParameters) {
-        if (jobParameters.size() == 0) {
-            return (c, cc) -> RepeatStatus.FINISHED;
-        }
         Resource inputResource = new ClassPathResource((String) jobParameters.get("inputResource"));
         String targetDirectory = (String) jobParameters.get("targetDirectory");
         String targetFile = (String) jobParameters.get("targetFile");
